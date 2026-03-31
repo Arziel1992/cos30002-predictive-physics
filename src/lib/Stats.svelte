@@ -38,15 +38,10 @@
 
 <style>
   .stats-window {
-    background: var(--glass-bg);
-    backdrop-filter: blur(8px);
+    background: var(--bg-primary);
     border: 1px solid var(--panel-border);
     border-radius: 12px;
     padding: 1.2rem;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    min-width: 250px;
-    pointer-events: auto; /* Allow interactions */
-    cursor: default; /* Reset cursor from crosshair */
   }
 
   .stat-header {
