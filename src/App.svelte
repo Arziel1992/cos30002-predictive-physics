@@ -22,10 +22,11 @@
     gravity: 980,
     dragK: 0.05
   });
-  
-  let sidebarWidth = $state(400);
-  let isResizing = $state(false);
+
   let containerRef = $state();
+
+  let leftOpen = $state(true);
+  let rightOpen = $state(true);
 
   let glossaryOpen = $state(false);
   let glossarySection = $state('root');
@@ -37,8 +38,8 @@
 
   function fire() {
     if (containerRef) {
-        const rect = containerRef.getBoundingClientRect();
-        simulation.fire(params, { width: rect.width, height: rect.height });
+      const rect = containerRef.getBoundingClientRect();
+      simulation.fire(params, { width: rect.width, height: rect.height });
     }
   }
 
@@ -48,8 +49,8 @@
     if (e.key === '2') params.mode = 'distance';
     if (e.key === '3') params.mode = 'advanced';
     if (e.key === 'r') {
-        simulation.reset();
-        stats.hits = 0; stats.misses = 0; stats.totalFires = 0; stats.lastError = 0;
+      simulation.reset();
+      stats.hits = 0; stats.misses = 0; stats.totalFires = 0; stats.lastError = 0;
     }
   }
 
@@ -64,60 +65,66 @@
     };
     loop();
 
-    const handleGlobalResize = (e) => {
-        if (!isResizing) return;
-        const newWidth = Math.max(300, Math.min(e.clientX, window.innerWidth * 0.25));
-        sidebarWidth = newWidth;
-    };
-    const stopResizing = () => { isResizing = false; };
-
-    window.addEventListener('mousemove', handleGlobalResize);
-    window.addEventListener('mouseup', stopResizing);
     window.addEventListener('keydown', handleKeydown);
 
     return () => {
       cancelAnimationFrame(animationId);
-      window.removeEventListener('mousemove', handleGlobalResize);
-      window.removeEventListener('mouseup', stopResizing);
       window.removeEventListener('keydown', handleKeydown);
     };
   });
 </script>
 
-<main class="app-layout" class:resizing={isResizing}>
-  <aside class="sidebar-container" style="width: {sidebarWidth}px">
+<main class="app-layout">
+  {#if leftOpen}
+  <aside class="sidebar-left">
     <div class="sidebar-inner">
       <Sidebar />
-      <hr />
-      <Controls 
-        bind:params 
-        onFire={fire} 
-        onReset={() => {
-            simulation.reset();
-            stats.hits = 0; stats.misses = 0; stats.totalFires = 0; stats.lastError = 0;
-        }} 
-        onGlossary={openGlossary}
-      />
     </div>
     <div class="app-footer">
       Made with ❤️ for Swinburne — COS30002 Artificial Intelligence for Games
     </div>
-    <button class="resizer" onmousedown={() => isResizing = true} aria-label="Resize Sidebar"></button>
   </aside>
-  
+  {/if}
+
   <section class="canvas-panel" bind:this={containerRef}>
+    <button class="toggle-btn toggle-left" onclick={() => leftOpen = !leftOpen} aria-label="Toggle left sidebar">
+      {leftOpen ? '◀' : '▶'}
+    </button>
+    <button class="toggle-btn toggle-right" onclick={() => rightOpen = !rightOpen} aria-label="Toggle right sidebar">
+      {rightOpen ? '▶' : '◀'}
+    </button>
+
     <Canvas {simulation} {params} {containerRef} />
-    
-    <div class="floating-top-right">
-       <Stats {stats} mode={params.mode} onGlossary={openGlossary} />
-    </div>
 
     <div class="floating-bottom-right">
-        <div class="kb-hint">
-            Shortcuts: [Space] Fire | [1-3] Mode | [R] Reset
-        </div>
+      <div class="kb-hint">
+        Shortcuts: [Space] Fire | [1-3] Mode | [R] Reset
+      </div>
     </div>
   </section>
+
+  {#if rightOpen}
+  <aside class="sidebar-right">
+    <div class="sidebar-inner">
+      <Controls
+        bind:params
+        onFire={fire}
+        onReset={() => {
+          simulation.reset();
+          stats.hits = 0; stats.misses = 0; stats.totalFires = 0; stats.lastError = 0;
+        }}
+        onGlossary={openGlossary}
+      />
+
+      <hr />
+
+      <Stats {stats} mode={params.mode} onGlossary={openGlossary} />
+    </div>
+    <div class="app-footer">
+      &copy; E. Ketterer Ortiz
+    </div>
+  </aside>
+  {/if}
 
   <Glossary bind:isOpen={glossaryOpen} bind:section={glossarySection} />
 </main>
@@ -140,35 +147,47 @@
   }
 
   .app-layout { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
-  .app-layout.resizing { cursor: col-resize; user-select: none; }
 
-  .sidebar-container {
-    background-color: var(--bg-secondary); border-right: 1px solid var(--panel-border);
-    display: flex; flex-direction: column; position: relative;
-    box-shadow: 1px 0 10px rgba(0,0,0,0.05); z-index: 100; flex-shrink: 0;
+  .sidebar-left, .sidebar-right {
+    width: 25%; flex-shrink: 0;
+    background-color: var(--bg-secondary);
+    display: flex; flex-direction: column;
+    z-index: 100; overflow: hidden;
+  }
+
+  .sidebar-left {
+    border-right: 1px solid var(--panel-border);
+    box-shadow: 1px 0 10px rgba(0,0,0,0.05);
+  }
+
+  .sidebar-right {
+    border-left: 1px solid var(--panel-border);
+    box-shadow: -1px 0 10px rgba(0,0,0,0.05);
   }
 
   .sidebar-inner { flex: 1; overflow-y: auto; padding: 1.5rem; }
-
-  .resizer {
-    position: absolute; right: -3px; top: 0;
-    width: 6px; height: 100%; cursor: col-resize;
-    background: transparent; border: none; z-index: 110;
-  }
-  .resizer:hover, .app-layout.resizing .resizer { background: var(--accent); }
 
   .app-footer {
     padding: 1rem; font-size: 0.7rem; color: var(--text-secondary);
     text-align: center; border-top: 1px solid var(--panel-border); background: var(--bg-primary);
   }
 
-  /* Fixed: The canvas panel must be overflow: hidden to contain the floating elements correctly */
-  .canvas-panel { flex: 1; position: relative; background-color: #f1f5f9; overflow: hidden; }
+  .canvas-panel { flex: 1; position: relative; background-color: #f1f5f9; overflow: hidden; min-width: 0; }
 
-  .floating-top-right {
-    position: absolute; top: 1.5rem; right: 1.5rem;
-    pointer-events: none; z-index: 200;
+  /* Toggle buttons */
+  .toggle-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    z-index: 200; width: 28px; height: 56px;
+    background: var(--glass-bg); backdrop-filter: blur(8px);
+    border: 1px solid var(--panel-border); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; color: var(--text-secondary);
+    transition: background 0.2s, color 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
+  .toggle-btn:hover { background: var(--accent); color: white; }
+  .toggle-left { left: 0; border-radius: 0 8px 8px 0; border-left: none; }
+  .toggle-right { right: 0; border-radius: 8px 0 0 8px; border-right: none; }
 
   .floating-bottom-right {
     position: absolute; bottom: 1.5rem; right: 1.5rem;
