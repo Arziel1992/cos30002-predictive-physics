@@ -75,9 +75,10 @@
   .md-body p strong { color: var(--text-primary); font-weight: 600; }
 
   .formula-block {
-    background: #000; padding: 1rem; border-radius: 8px;
+    background: #f1f5f9; padding: 1rem; border-radius: 8px;
     margin: 1rem 0; font-family: monospace; color: var(--accent);
     border: 1px solid var(--panel-border); font-size: 0.85rem;
+    text-align: center;
   }
 
   .game-cases article {
