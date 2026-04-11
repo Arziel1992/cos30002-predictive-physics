@@ -1,10 +1,10 @@
 <script>
-  let { stats, mode, onGlossary = () => {} } = $props();
+let { stats, mode, onGlossary = () => {} } = $props();
 
-  function getAccuracy() {
-    if (stats.totalFires === 0) return 0;
-    return (stats.hits / stats.totalFires) * 100;
-  }
+function getAccuracy() {
+	if (stats.totalFires === 0) return 0;
+	return (stats.hits / stats.totalFires) * 100;
+}
 </script>
 
 <div class="stats-window">
