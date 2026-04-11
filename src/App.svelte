@@ -1,77 +1,83 @@
 <script>
-  import Sidebar from './lib/Sidebar.svelte';
-  import Canvas from './lib/Canvas.svelte';
-  import Controls from './lib/Controls.svelte';
-  import Stats from './lib/Stats.svelte';
-  import Glossary from './lib/Glossary.svelte';
-  import { BallisticsSim } from './lib/Simulation.js';
-  import { onMount } from 'svelte';
+import { onMount } from "svelte";
+import Canvas from "./lib/Canvas.svelte";
+import Controls from "./lib/Controls.svelte";
+import Glossary from "./lib/Glossary.svelte";
+import Sidebar from "./lib/Sidebar.svelte";
+import { BallisticsSim } from "./lib/Simulation.js";
+import Stats from "./lib/Stats.svelte";
 
-  let stats = $state({
-    hits: 0,
-    misses: 0,
-    totalFires: 0,
-    lastError: 0
-  });
+let stats = $state({
+	hits: 0,
+	misses: 0,
+	totalFires: 0,
+	lastError: 0,
+});
 
-  let simulation = $state(new BallisticsSim(stats));
-  let params = $state({
-    mode: 'hitscan',
-    targetSpeed: 2.0,
-    muzzleVelocity: 600,
-    gravity: 980,
-    dragK: 0.05
-  });
+let simulation = $state(new BallisticsSim(stats));
+let params = $state({
+	mode: "hitscan",
+	targetSpeed: 2.0,
+	muzzleVelocity: 600,
+	gravity: 980,
+	dragK: 0.05,
+});
 
-  let containerRef = $state();
+let containerRef = $state();
 
-  let leftOpen = $state(true);
-  let rightOpen = $state(true);
+let leftOpen = $state(true);
+let rightOpen = $state(true);
 
-  let glossaryOpen = $state(false);
-  let glossarySection = $state('root');
+let glossaryOpen = $state(false);
+let glossarySection = $state("root");
 
-  function openGlossary(section = 'root') {
-    glossarySection = section;
-    glossaryOpen = true;
-  }
+function openGlossary(section = "root") {
+	glossarySection = section;
+	glossaryOpen = true;
+}
 
-  function fire() {
-    if (containerRef) {
-      const rect = containerRef.getBoundingClientRect();
-      simulation.fire(params, { width: rect.width, height: rect.height });
-    }
-  }
+function fire() {
+	if (containerRef) {
+		const rect = containerRef.getBoundingClientRect();
+		simulation.fire(params, { width: rect.width, height: rect.height });
+	}
+}
 
-  function handleKeydown(e) {
-    if (e.code === 'Space') { e.preventDefault(); fire(); }
-    if (e.key === '1') params.mode = 'hitscan';
-    if (e.key === '2') params.mode = 'distance';
-    if (e.key === '3') params.mode = 'advanced';
-    if (e.key === 'r') {
-      simulation.reset();
-      stats.hits = 0; stats.misses = 0; stats.totalFires = 0; stats.lastError = 0;
-    }
-  }
+function handleKeydown(e) {
+	if (e.code === "Space") {
+		e.preventDefault();
+		fire();
+	}
+	if (e.key === "1") params.mode = "hitscan";
+	if (e.key === "2") params.mode = "distance";
+	if (e.key === "3") params.mode = "advanced";
+	if (e.key === "r") {
+		simulation.reset();
+		stats.hits = 0;
+		stats.misses = 0;
+		stats.totalFires = 0;
+		stats.lastError = 0;
+	}
+}
 
-  onMount(() => {
-    let animationId;
-    const loop = () => {
-      if (containerRef) {
-        const rect = containerRef.getBoundingClientRect();
-        simulation.update(params, { width: rect.width, height: rect.height });
-      }
-      animationId = requestAnimationFrame(loop);
-    };
-    loop();
+onMount(() => {
+	let animationId;
+	const loop = () => {
+		if (containerRef) {
+			const rect = containerRef.getBoundingClientRect();
+			simulation.update(params, { width: rect.width, height: rect.height });
+		}
+		animationId = requestAnimationFrame(loop);
+	};
+	loop();
 
-    window.addEventListener('keydown', handleKeydown);
+	window.addEventListener("keydown", handleKeydown);
 
-    return () => {
-      cancelAnimationFrame(animationId);
-      window.removeEventListener('keydown', handleKeydown);
-    };
-  });
+	return () => {
+		cancelAnimationFrame(animationId);
+		window.removeEventListener("keydown", handleKeydown);
+	};
+});
 </script>
 
 <main class="app-layout">

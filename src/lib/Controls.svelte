@@ -1,16 +1,31 @@
 <script>
-  let { 
-    params = $bindable(), 
-    onFire = () => {}, 
-    onReset = () => {},
-    onGlossary = () => {}
-  } = $props();
+let {
+	params = $bindable(),
+	onFire = () => {},
+	onReset = () => {},
+	onGlossary = () => {},
+} = $props();
 
-  const modes = [
-    { id: 'hitscan', label: 'Mode A: Hitscan', tooltip: 'Instant beam. Requires zero lead time, zero prediction. The simplest targeting algorithm.' },
-    { id: 'distance', label: 'Mode B: Simple Kinematics', tooltip: 'Basic Newtonian intercept. Calculates lead time = distance / velocity. Compensates for gravity, but ignores drag.' },
-    { id: 'advanced', label: 'Mode C: Advanced Ballistics', tooltip: 'Atmospheric awareness. The AI uses an iterative "Guess, Try, Refine" loop to account for non-linear decay (Drag).' }
-  ];
+const modes = [
+	{
+		id: "hitscan",
+		label: "Mode A: Hitscan",
+		tooltip:
+			"Instant beam. Requires zero lead time, zero prediction. The simplest targeting algorithm.",
+	},
+	{
+		id: "distance",
+		label: "Mode B: Simple Kinematics",
+		tooltip:
+			"Basic Newtonian intercept. Calculates lead time = distance / velocity. Compensates for gravity, but ignores drag.",
+	},
+	{
+		id: "advanced",
+		label: "Mode C: Advanced Ballistics",
+		tooltip:
+			'Atmospheric awareness. The AI uses an iterative "Guess, Try, Refine" loop to account for non-linear decay (Drag).',
+	},
+];
 </script>
 
 <div class="controls-panel">
