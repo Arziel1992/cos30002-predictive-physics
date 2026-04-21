@@ -25,7 +25,14 @@ $$AimHeight = TargetHeight + \frac{1}{2} g \times Time^2$$
 ### Iterative Ballistics (Drag)
 The AI guesses a time-to-intercept, calculates the bullet's deceleration, and refines its estimate until the error falls within a negligible threshold.
 
-## 👨‍🏫 Local Development
+## 💻 Tech Stack
+
+- **Framework:** [Svelte 5](https://svelte.dev/)
+- **Build Tool:** [Vite](https://vitejs.dev/)
+- **Rendering:** HTML5 Canvas API
+- **Styling:** CSS variables via Master Template (`app.css`)
+
+## 👨‍🏫 Local Development & Deployment
 
 1. **Install Dependencies:**
    ```bash
@@ -37,11 +44,14 @@ The AI guesses a time-to-intercept, calculates the bullet's deceleration, and re
    npm run dev
    ```
 
-3. **Build for Production:**
+3. **Build for Production (Canvas RCE Deployment):**
    ```bash
    npm run build
    ```
 
 ## 📄 License
 
-This project is designed as educational material for Swinburne University's COS30002 "AI for Games". All rights reserved.
+This repository is licensed under the terms described in the [LICENSE](./LICENSE) file. 
+
+---
+_Made with ❤️ for Swinburne — COS30002 Artificial Intelligence for Games — By E. Ketterer_
