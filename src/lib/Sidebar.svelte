@@ -1,7 +1,7 @@
 <section class="sidebar-content">
   <header>
     <h1>Predictive Ballistics</h1>
-    <p class="tagline">Kinematic Intercept Systems for COS30002</p>
+    <p class="tagline">Kinematic Physics &mdash; COS30002 Module 5</p>
   </header>
 
   <div class="md-body">
