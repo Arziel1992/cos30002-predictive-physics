@@ -25,7 +25,7 @@ export class BallisticsSim {
 	}
 
 	update(params, canvasSize) {
-		const { targetSpeed, muzzleVelocity, gravity, dragK, mode } = params;
+		const { targetSpeed, gravity, dragK } = params;
 
 		// 1. Update Target
 		this.target.time += this.fixedDelta;
@@ -80,15 +80,20 @@ export class BallisticsSim {
 					}
 				}
 				p.life--;
+				// Lasers are transient: remove once the fade-out life expires.
+				// (They have no x/y, so the projectile bounds check below cannot cull them.)
+				if (p.life <= 0) this.projectiles.splice(i, 1);
+				continue;
 			}
 
+			// Bounds culling applies only to ballistic projectiles (lasers handled above).
 			if (
 				p.x > canvasSize.width + 100 ||
 				p.x < -100 ||
 				p.y > canvasSize.height + 100 ||
 				p.y < -100
 			) {
-				if (p.type === "projectile") this.stats.misses++;
+				this.stats.misses++;
 				this.projectiles.splice(i, 1);
 			}
 		}
@@ -156,6 +161,10 @@ export class BallisticsSim {
 		this.prediction.active = true;
 
 		if (mode === "hitscan") {
+			// Hitscan is instantaneous: it aims at (and the marker shows) the
+			// target's CURRENT position — no lead/drop compensation applies.
+			this.prediction.y = ty;
+			this.prediction.time = 0;
 			this.turret.angle = Math.atan2(ty - turY, tx - turX);
 		} else {
 			// Aim at Intercept Point minus Drop compensation

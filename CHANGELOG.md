@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2026-06-20 - 05:06
+
+### Fixed
+
+- Hitscan laser shots are now removed when their fade life expires. Previously they were never culled (the out-of-bounds check referenced `x`/`y`, which laser objects do not have), so every shot leaked an object indefinitely.
+
+### Changed
+
+- In hitscan mode the prediction marker now reflects the target's current position (matching where the instantaneous shot actually lands) rather than a lead/drop point hitscan ignores.
 
 ## 2026-06-19 - 23:18
 
