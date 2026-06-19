@@ -5,7 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2026-06-19 - 22:18] - Conform to refined tool_template
+
+## 2026-06-19 - 23:18
+
+### Changed
+
+- Migrated the package manager from npm to **pnpm** (global pnpm via Volta).
+- Updated CI (`deploy.yml`) to set up pnpm via `pnpm/action-setup` and run `pnpm install --frozen-lockfile` + `pnpm run build`.
+- Updated README commands to pnpm.
+
+### Added
+
+- `pnpm-lock.yaml` (imported from the previous `package-lock.json`, which was removed).
+- Node pin `"volta": { "node": "24.17.0" }` in `package.json`.
+
+## 2026-06-19 - 22:18 - Conform to refined tool_template
 
 ### Changed
 
@@ -23,19 +37,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed the broken `/vite.svg` favicon reference (the asset did not exist, causing a 404).
 
-## [2026-04-01 - 00:27] - Fix Vite Version Compatibility
+## 2026-04-01 - 00:27 - Fix Vite Version Compatibility
 
 ### Fixed
 
 - Downgraded `vite` from `^8.0.0` to `^5.0.0` to satisfy `@sveltejs/vite-plugin-svelte@4` peer dependency (`vite ^5.0.0` required). GitHub Actions CI was failing with `ERESOLVE`.
 
-## [2026-03-31 - 23:59] - Copyright Footer
+## 2026-03-31 - 23:59 - Copyright Footer
 
 ### Added
 
 - Copyright footer (© E. Ketterer Ortiz) to the right sidebar in all three projects.
 
-## [2026-03-31 - 23:47] - Dual Sidebar Layout
+## 2026-03-31 - 23:47 - Dual Sidebar Layout
 
 ### Changed
 
@@ -46,13 +60,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed drag-resize functionality.
 - Stats panel restyled from glassmorphism floating card to native sidebar section.
 
-## [2026-03-31 - 12:00] - Style Fix
+## 2026-03-31 - 12:00 - Style Fix
 
 ### Changed
 
 - `Sidebar.svelte`: formula block background changed from black (`#000`) to light (`#f1f5f9`) to match goap-fuzzy project style; added `text-align: center`
 
-## [2026-03-31 - 03:20] - Initial Commit
+## 2026-03-31 - 03:20 - Initial Commit
 
 ### Added
 

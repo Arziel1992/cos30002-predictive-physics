@@ -36,17 +36,17 @@ The AI guesses a time-to-intercept, calculates the bullet's deceleration, and re
 
 1. **Install Dependencies:**
    ```bash
-   npm install
+   pnpm install
    ```
 
 2. **Run Dev Server:**
    ```bash
-   npm run dev
+   pnpm dev
    ```
 
 3. **Build for Production (Canvas RCE Deployment):**
    ```bash
-   npm run build
+   pnpm build
    ```
 
 ## 📄 License
