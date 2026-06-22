@@ -63,14 +63,25 @@ function handleKeydown(e) {
 
 onMount(() => {
 	let animationId;
-	const loop = () => {
+	// Fixed-timestep accumulator so projectile flight runs at real-time speed
+	// regardless of display refresh rate (144 Hz would otherwise run it ~2.4× fast).
+	const STEP = 1 / 60;
+	let last = performance.now();
+	let acc = 0;
+	const loop = (now) => {
+		acc += Math.min((now - last) / 1000, 0.1);
+		last = now;
 		if (containerRef) {
 			const rect = containerRef.getBoundingClientRect();
-			simulation.update(params, { width: rect.width, height: rect.height });
+			const bounds = { width: rect.width, height: rect.height };
+			while (acc >= STEP) {
+				simulation.update(params, bounds);
+				acc -= STEP;
+			}
 		}
 		animationId = requestAnimationFrame(loop);
 	};
-	loop();
+	animationId = requestAnimationFrame(loop);
 
 	window.addEventListener("keydown", handleKeydown);
 
