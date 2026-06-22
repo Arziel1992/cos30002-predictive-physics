@@ -135,7 +135,20 @@ export class BallisticsSim {
 
 		let t = dist / muzzleVelocity;
 
+		// Iterate the geometric intercept. The target leads in Y, so the predicted
+		// hit point sits a different distance away than the target's current
+		// position; refining t a few times converges on the true intercept instead
+		// of the first-order guess.
+		const vyPx = this.target.velocity.y * canvasSize.height;
+		for (let k = 0; k < 6; k++) {
+			const leadY = ty + vyPx * t;
+			t = Math.hypot(dx, leadY - turY) / muzzleVelocity;
+		}
+		const distLead = Math.hypot(dx, ty + vyPx * t - turY);
+
 		if (mode === "advanced") {
+			// Then correct for drag: solve for the time at which a decelerating
+			// projectile covers the (lead) intercept distance.
 			for (let j = 0; j < 15; j++) {
 				let traveledDist = 0;
 				let v = muzzleVelocity;
@@ -146,7 +159,7 @@ export class BallisticsSim {
 					v -= dragK * v * step;
 					curT += step;
 				}
-				const error = dist - traveledDist;
+				const error = distLead - traveledDist;
 				this.stats.lastError = error;
 				t += error / muzzleVelocity;
 			}
